@@ -1,4 +1,5 @@
 import { ChecklistCard, NextStageCard, ProductSection, StageCards } from "@/components/product/blocks";
+import { SetupEditor, WorkspaceSnapshot } from "@/components/product/editors";
 import { ProductShell } from "@/components/product/shell";
 
 const setupPages = [
@@ -67,6 +68,17 @@ export default function SetupPage() {
               <ChecklistCard title="Critical roles" items={roles} />
               <ChecklistCard title="Setup outcomes" items={setupOutputs} />
             </div>
+          </div>
+        </ProductSection>
+
+        <ProductSection
+          eyebrow="Shared Mock State"
+          title="Edit setup and role assignments"
+          description="These controls persist in local storage and carry through the rest of the mocked product flow. That gives you one connected workspace instead of isolated static screens."
+        >
+          <div className="space-y-4">
+            <SetupEditor />
+            <WorkspaceSnapshot />
           </div>
         </ProductSection>
 
