@@ -4,7 +4,9 @@ import {
   Check,
   ChevronRight,
   Clock3,
+  Database,
   FileCheck2,
+  LockKeyhole,
   Menu,
   ShieldCheck,
   Sparkles,
@@ -34,6 +36,13 @@ const heroMetrics = [
   { label: "Companies onboarded", value: "340+" },
   { label: "Avg. score gain / quarter", value: "2.4pts" },
   { label: "Audit pass rate", value: "98%" },
+];
+
+const trustStats = [
+  { label: "Implementation time", value: "< 10 days" },
+  { label: "Evidence exports generated", value: "12k+" },
+  { label: "Document reminder coverage", value: "100%" },
+  { label: "Account reviews", value: "Quarterly" },
 ];
 
 const pillars = [
@@ -218,6 +227,40 @@ const pricing = [
   },
 ];
 
+const trustPillars = [
+  {
+    icon: LockKeyhole,
+    title: "Security and access control",
+    description:
+      "Role-based access, controlled document visibility, and clear ownership over who can upload, review, and export evidence.",
+  },
+  {
+    icon: Database,
+    title: "Structured source data",
+    description:
+      "Payroll, procurement, and training inputs are mapped into scorecard logic so teams can see exactly what is driving each movement.",
+  },
+  {
+    icon: FileCheck2,
+    title: "Audit-ready evidence flow",
+    description:
+      "Every recommended action ties back to the supporting evidence and the output expected during verification.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Operational accountability",
+    description:
+      "Assigned owners, review cycles, and status history make the platform feel like a governed system, not a black box.",
+  },
+];
+
+const implementationSteps = [
+  "Connect payroll, spend, and certificate inputs.",
+  "Review the live baseline with your compliance owner.",
+  "Prioritize actions by impact, cost, and timing.",
+  "Export evidence packs when verification starts.",
+];
+
 function SectionHeading({
   eyebrow,
   title,
@@ -251,8 +294,8 @@ function SectionHeading({
 export default function Home() {
   return (
     <main className="relative overflow-hidden bg-[color:var(--background)] text-[color:var(--foreground)]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,241,171,0.18),transparent_28%),radial-gradient(circle_at_20%_20%,rgba(20,184,166,0.12),transparent_22%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(99,241,171,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(99,241,171,0.045)_1px,transparent_1px)] bg-[size:72px_72px] opacity-30" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,241,171,0.12),transparent_24%),radial-gradient(circle_at_20%_20%,rgba(20,184,166,0.08),transparent_18%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(99,241,171,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,241,171,0.03)_1px,transparent_1px)] bg-[size:72px_72px] opacity-20" />
 
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[color:var(--background)]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
@@ -328,12 +371,12 @@ export default function Home() {
         <div className="relative z-10 flex flex-col justify-center">
           <Badge className="mb-6 w-fit">Compliance Intelligence Platform</Badge>
           <h1 className="max-w-3xl font-serif text-5xl leading-[0.94] tracking-[-0.05em] text-white sm:text-6xl lg:text-8xl">
-            Know your score.
-            <span className="block text-[color:var(--primary)]">Own your outcome.</span>
+            Compliance visibility
+            <span className="block text-[color:var(--primary)]">your team can trust.</span>
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-8 text-[color:var(--muted-foreground)] sm:text-lg lg:text-xl">
-            Equi turns compliance from a static report into an operating system: live score visibility,
-            ranked improvement moves, and audit-ready documentation without the spreadsheet fog.
+            Equi gives leadership and compliance teams a live operating view of score movement, evidence gaps,
+            and next actions, so audit prep is governed, traceable, and less dependent on manual follow-up.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg" className="rounded-full px-7">
@@ -357,6 +400,22 @@ export default function Home() {
                   </p>
                 </CardContent>
               </Card>
+            ))}
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3 text-xs text-[color:var(--muted-foreground)]">
+            {[
+              "Role-based access controls",
+              "Audit-ready exports",
+              "Guided implementation",
+              "Clear evidence ownership",
+            ].map((item) => (
+              <div
+                key={item}
+                className="rounded-full border border-white/8 bg-white/[0.03] px-4 py-2"
+              >
+                {item}
+              </div>
             ))}
           </div>
         </div>
@@ -466,13 +525,55 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
+          <SectionHeading
+            eyebrow="Why Teams Trust Equi"
+            title="Built to reduce"
+            accent="compliance uncertainty."
+            description="Trust does not come from saying the platform is intelligent. It comes from showing how data is handled, how evidence is tracked, and how your team stays in control."
+          />
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {trustPillars.map((pillar) => {
+              const Icon = pillar.icon;
+
+              return (
+                <Card key={pillar.title} className="rounded-[1.75rem] border-white/8 bg-white/[0.025]">
+                  <CardContent className="p-6">
+                    <div className="flex size-11 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 text-emerald-300">
+                      <Icon className="size-5" />
+                    </div>
+                    <h3 className="mt-5 text-xl font-semibold text-white">{pillar.title}</h3>
+                    <p className="mt-3 text-sm leading-7 text-[color:var(--muted-foreground)]">
+                      {pillar.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {trustStats.map((stat) => (
+            <Card key={stat.label} className="rounded-[1.5rem] border-white/8 bg-white/[0.02]">
+              <CardContent className="p-5">
+                <p className="font-mono text-2xl text-white">{stat.value}</p>
+                <p className="mt-2 text-sm text-[color:var(--muted-foreground)]">{stat.label}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
       <section id="platform" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
           <SectionHeading
             eyebrow="Platform"
             title="Your compliance"
             accent="command center."
-            description="The original concept had the right mood. This version keeps the signal but improves scanability, hierarchy, and mobile behavior so the product offering is clearer within the first screen and a half."
+            description="The product view is positioned as an operating console rather than a speculative dashboard. That makes the platform feel more dependable for teams buying around risk, governance, and audit outcomes."
           />
 
           <Card className="rounded-[2rem] overflow-hidden border-[color:var(--border-strong)]">
@@ -561,6 +662,35 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
+
+                <Card className="rounded-[1.35rem] border-white/8 bg-white/[0.02]">
+                  <CardContent className="grid gap-4 p-4 sm:grid-cols-[1fr_auto] sm:items-center">
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+                        Implementation flow
+                      </p>
+                      <div className="mt-3 grid gap-2">
+                        {implementationSteps.map((step) => (
+                          <div key={step} className="flex items-start gap-3">
+                            <div className="mt-1 flex size-5 items-center justify-center rounded-full border border-emerald-400/20 bg-emerald-400/10 text-emerald-300">
+                              <Check className="size-3" />
+                            </div>
+                            <p className="text-sm leading-6 text-white/90">{step}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="rounded-[1.25rem] border border-white/8 bg-black/10 px-4 py-3">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[color:var(--muted-foreground)]">
+                        Customer success
+                      </p>
+                      <p className="mt-2 text-lg font-semibold text-white">Guided onboarding</p>
+                      <p className="mt-1 text-sm text-[color:var(--muted-foreground)]">
+                        Quarterly reviews and workflow support.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </CardContent>
           </Card>
@@ -572,7 +702,7 @@ export default function Home() {
           eyebrow="Capabilities"
           title="Built for the"
           accent="whole stack."
-          description="The feature set is still centered on score visibility, planning, procurement, training, and verification, but the cards are now easier to skim and hold up better on smaller screens."
+          description="The feature set still spans score visibility, planning, procurement, training, and verification, but the framing now emphasizes practical control instead of product theater."
         />
 
         <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -610,7 +740,7 @@ export default function Home() {
             eyebrow="Scorecard"
             title="Five pillars."
             accent="One number."
-            description="Equi maps the generic scorecard into a weighted system leaders can actually act on. The UI now emphasizes contribution, risk, and gaps instead of just presenting raw labels."
+            description="Equi maps the scorecard into a working model leadership can monitor. The presentation now emphasizes contribution, exposure, and evidence readiness instead of decorative analytics."
           />
 
           <Card className="rounded-[2rem] border-white/8 bg-[linear-gradient(180deg,rgba(11,16,14,0.96),rgba(8,11,10,0.96))]">
@@ -679,6 +809,7 @@ export default function Home() {
             eyebrow="Customer Stories"
             title="Results that"
             accent="speak plainly."
+            description="The stories are framed around real operating outcomes: less audit prep, clearer decisions, and measurable score improvement."
           />
 
           <div className="mt-10 grid gap-4 lg:grid-cols-3">
@@ -711,7 +842,7 @@ export default function Home() {
           eyebrow="Pricing"
           title="Simple, scalable"
           accent="pricing."
-          description="I kept the three-tier structure from the source file, but the cards are more differentiated and easier to compare on mobile without collapsing into a cramped table."
+          description="Pricing is more credible when buyers understand the level of operational support they are getting, so each tier now reads as a maturity step rather than a vague bundle."
         />
 
         <div className="mt-10 grid gap-4 xl:grid-cols-3">
@@ -766,6 +897,25 @@ export default function Home() {
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        <div className="mt-6 rounded-[1.75rem] border border-white/8 bg-white/[0.025] p-5 sm:p-6">
+          <div className="grid gap-4 lg:grid-cols-3">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+                Included in every plan
+              </p>
+              <p className="mt-3 text-lg font-semibold text-white">Support that reduces rollout risk</p>
+            </div>
+            <div className="space-y-2 text-sm leading-7 text-[color:var(--muted-foreground)]">
+              <p>Baseline score review and initial action-plan setup.</p>
+              <p>Document structure aligned to verification workflows.</p>
+            </div>
+            <div className="space-y-2 text-sm leading-7 text-[color:var(--muted-foreground)]">
+              <p>Guided onboarding with compliance stakeholder input.</p>
+              <p>Platform support as reporting cycles and evidence needs change.</p>
+            </div>
+          </div>
         </div>
       </section>
 
