@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowRight, Check, ChevronRight, Menu } from "lucide-react";
 
 import { EquiLogo } from "@/components/brand/equi-logo";
@@ -64,9 +65,9 @@ export function LandingHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[color:var(--background)]/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <a href="#" aria-label="Equi.ai home">
+        <Link href="/" aria-label="Equi.ai home">
           <EquiLogo />
-        </a>
+        </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
           <a href="#platform" className="text-sm text-[color:var(--muted-foreground)] transition hover:text-white">
@@ -85,7 +86,7 @@ export function LandingHeader() {
 
         <div className="hidden md:block">
           <Button asChild>
-            <a href="#cta">Request Access</a>
+            <Link href="/get-started">Request Access</Link>
           </Button>
         </div>
 
@@ -108,7 +109,7 @@ export function LandingHeader() {
                 Pricing
               </a>
               <Button asChild className="mt-2 w-full">
-                <a href="#cta">Request Access</a>
+                <Link href="/get-started">Request Access</Link>
               </Button>
             </div>
           </div>
@@ -143,13 +144,13 @@ export function HeroSection() {
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button asChild size="lg" className="rounded-full px-7">
-            <a href="#cta">
+            <Link href="/get-started">
               Request Early Access
               <ArrowRight />
-            </a>
+            </Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="rounded-full px-7">
-            <a href="#platform">See Platform</a>
+            <Link href="/dashboard">See Platform</Link>
           </Button>
         </div>
 
@@ -507,10 +508,10 @@ export function ScoreSection() {
             ))}
             <div className="pt-2">
               <Button asChild size="lg">
-                <a href="#cta">
+                <Link href="/get-started">
                   Run Free Assessment
                   <ChevronRight />
-                </a>
+                </Link>
               </Button>
             </div>
           </CardContent>
@@ -625,7 +626,7 @@ export function PricingSection() {
               </div>
               <div className="mt-8">
                 <Button asChild variant={plan.featured ? "default" : "outline"} className="w-full">
-                  <a href="#cta">{plan.cta}</a>
+                  <Link href="/get-started">{plan.cta}</Link>
                 </Button>
               </div>
             </CardContent>
@@ -671,10 +672,10 @@ export function CtaSection() {
           </p>
           <div className="relative z-10 mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Button asChild size="lg">
-              <a href="mailto:hello@equi.ai">Request Early Access</a>
+              <Link href="/get-started">Request Early Access</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <a href="mailto:sales@equi.ai">Book a Demo</a>
+              <Link href="/dashboard">View Dashboard</Link>
             </Button>
           </div>
           <p className="relative z-10 mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-white/45">
