@@ -2,6 +2,11 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
+import {
+  dashboardActions,
+  dashboardDocuments,
+} from "@/components/product/data";
+
 type RoleKey =
   | "admin"
   | "complianceLead"
@@ -10,6 +15,48 @@ type RoleKey =
   | "procurementLead"
   | "executiveViewer"
   | "auditor";
+
+type StageKey = "intake" | "setup" | "onboarding";
+
+type StageStatus = {
+  completed: boolean;
+  progress: number;
+};
+
+type ActionDecision = "accepted" | "rejected" | "pending";
+
+type WorkspaceAction = {
+  id: string;
+  priority: "High" | "Medium" | "Low";
+  title: string;
+  owner: string;
+  due: string;
+  points: string;
+  decision: ActionDecision;
+  status:
+    | "not_started"
+    | "in_progress"
+    | "blocked"
+    | "awaiting_review"
+    | "complete"
+    | "verified";
+};
+
+type EvidenceStatus = "Ready" | "Review" | "Missing items";
+
+type WorkspaceDocument = {
+  id: string;
+  name: string;
+  status: EvidenceStatus;
+  owner: string;
+  updated: string;
+};
+
+type DataSource = {
+  id: string;
+  label: string;
+  connected: boolean;
+};
 
 type WorkspaceState = {
   companyName: string;
@@ -27,6 +74,10 @@ type WorkspaceState = {
   documentCategories: string[];
   currentUserRole: RoleKey;
   roles: Record<RoleKey, string>;
+  stageStatus: Record<StageKey, StageStatus>;
+  dataSources: DataSource[];
+  actions: WorkspaceAction[];
+  documents: WorkspaceDocument[];
 };
 
 type WorkspaceContextValue = {
@@ -35,9 +86,53 @@ type WorkspaceContextValue = {
   updateRole: (role: RoleKey, value: string) => void;
   updateDocumentCategory: (index: number, value: string) => void;
   setCurrentUserRole: (role: RoleKey) => void;
+  setStageStatus: (stage: StageKey, patch: Partial<StageStatus>) => void;
+  toggleDataSource: (id: string) => void;
+  setActionDecision: (id: string, decision: ActionDecision) => void;
+  setActionStatus: (id: string, status: WorkspaceAction["status"]) => void;
+  setDocumentStatus: (id: string, status: EvidenceStatus) => void;
+  canAccessRoute: (href: string) => boolean;
 };
 
 const STORAGE_KEY = "equi-mock-workspace";
+
+const roleRouteAccess: Record<RoleKey, string[]> = {
+  admin: [
+    "/intake",
+    "/setup",
+    "/onboarding",
+    "/assessment",
+    "/insights",
+    "/actions",
+    "/execution",
+    "/evidence",
+    "/audit-center",
+    "/monitoring",
+    "/dashboard",
+    "/book-demo",
+    "/get-started",
+  ],
+  complianceLead: [
+    "/intake",
+    "/setup",
+    "/onboarding",
+    "/assessment",
+    "/insights",
+    "/actions",
+    "/execution",
+    "/evidence",
+    "/audit-center",
+    "/monitoring",
+    "/dashboard",
+    "/book-demo",
+    "/get-started",
+  ],
+  financeLead: ["/assessment", "/insights", "/actions", "/execution", "/evidence", "/monitoring", "/dashboard"],
+  peopleLead: ["/assessment", "/insights", "/actions", "/execution", "/evidence", "/monitoring", "/dashboard"],
+  procurementLead: ["/assessment", "/insights", "/actions", "/execution", "/evidence", "/monitoring", "/dashboard"],
+  executiveViewer: ["/assessment", "/insights", "/monitoring", "/dashboard"],
+  auditor: ["/evidence", "/audit-center", "/dashboard"],
+};
 
 const defaultWorkspace: WorkspaceState = {
   companyName: "Meridian Group Holdings",
@@ -69,7 +164,55 @@ const defaultWorkspace: WorkspaceState = {
     executiveViewer: "James Petersen",
     auditor: "Pending assignment",
   },
+  stageStatus: {
+    intake: { completed: true, progress: 100 },
+    setup: { completed: false, progress: 65 },
+    onboarding: { completed: false, progress: 83 },
+  },
+  dataSources: [
+    { id: "payroll", label: "Payroll / HRIS", connected: true },
+    { id: "procurement", label: "Procurement / ERP / accounting", connected: true },
+    { id: "supplier-certificates", label: "Supplier certificates", connected: true },
+    { id: "training", label: "Training spend and records", connected: false },
+    { id: "ownership", label: "Ownership / board structure", connected: true },
+    { id: "documents", label: "Supporting documents upload", connected: true },
+  ],
+  actions: dashboardActions.map((action, index) => ({
+    id: `action-${index + 1}`,
+    ...action,
+    priority: action.priority as WorkspaceAction["priority"],
+    decision: index < 2 ? "accepted" : index === 2 ? "pending" : "rejected",
+    status: index === 0 ? "in_progress" : index === 1 ? "awaiting_review" : index === 2 ? "not_started" : "blocked",
+  })),
+  documents: dashboardDocuments.map((document, index) => ({
+    id: `document-${index + 1}`,
+    ...document,
+    status: document.status as EvidenceStatus,
+  })),
 };
+
+function mergeWorkspaceState(saved: Partial<WorkspaceState> | null | undefined): WorkspaceState {
+  if (!saved) {
+    return defaultWorkspace;
+  }
+
+  return {
+    ...defaultWorkspace,
+    ...saved,
+    roles: {
+      ...defaultWorkspace.roles,
+      ...saved.roles,
+    },
+    stageStatus: {
+      ...defaultWorkspace.stageStatus,
+      ...saved.stageStatus,
+    },
+    dataSources: saved.dataSources ?? defaultWorkspace.dataSources,
+    actions: saved.actions ?? defaultWorkspace.actions,
+    documents: saved.documents ?? defaultWorkspace.documents,
+    documentCategories: saved.documentCategories ?? defaultWorkspace.documentCategories,
+  };
+}
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
 
@@ -85,7 +228,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      return JSON.parse(saved) as WorkspaceState;
+      return mergeWorkspaceState(JSON.parse(saved) as Partial<WorkspaceState>);
     } catch {
       window.localStorage.removeItem(STORAGE_KEY);
       return defaultWorkspace;
@@ -133,6 +276,59 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
           ...current,
           currentUserRole: role,
         })),
+      setStageStatus: (stage, patch) =>
+        setWorkspace((current) => ({
+          ...current,
+          stageStatus: {
+            ...current.stageStatus,
+            [stage]: {
+              ...current.stageStatus[stage],
+              ...patch,
+            },
+          },
+        })),
+      toggleDataSource: (id) =>
+        setWorkspace((current) => {
+          const dataSources = current.dataSources.map((source) =>
+            source.id === id ? { ...source, connected: !source.connected } : source,
+          );
+          const connectedCount = dataSources.filter((source) => source.connected).length;
+          const progress = Math.round((connectedCount / dataSources.length) * 100);
+
+          return {
+            ...current,
+            dataSources,
+            stageStatus: {
+              ...current.stageStatus,
+              onboarding: {
+                completed: progress === 100,
+                progress,
+              },
+            },
+          };
+        }),
+      setActionDecision: (id, decision) =>
+        setWorkspace((current) => ({
+          ...current,
+          actions: current.actions.map((action) =>
+            action.id === id ? { ...action, decision } : action,
+          ),
+        })),
+      setActionStatus: (id, status) =>
+        setWorkspace((current) => ({
+          ...current,
+          actions: current.actions.map((action) =>
+            action.id === id ? { ...action, status } : action,
+          ),
+        })),
+      setDocumentStatus: (id, status) =>
+        setWorkspace((current) => ({
+          ...current,
+          documents: current.documents.map((document) =>
+            document.id === id ? { ...document, status } : document,
+          ),
+        })),
+      canAccessRoute: (href) => roleRouteAccess[workspace.currentUserRole].includes(href),
     }),
     [workspace],
   );
