@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 import { ChecklistCard, InfoGrid, NextStageCard, ProductSection, StageCards } from "@/components/product/blocks";
+import { IntakeEditor, WorkspaceSnapshot } from "@/components/product/editors";
 import { ProductShell } from "@/components/product/shell";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 const intakeInputs = [
   "Company name",
@@ -66,28 +66,12 @@ export default function IntakePage() {
 
         <ProductSection
           eyebrow="Mocked Form State"
-          title="Sample intake record"
-          description="Using mock data for now, but the structure reflects the real information the app should gather before setup begins."
+          title="Editable intake record"
+          description="This is now backed by shared mock workspace state. Update these values and the setup shell and downstream product pages will reflect the same company context."
         >
-          <div className="grid gap-4 lg:grid-cols-2">
-            <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
-              <CardContent className="p-6 text-sm leading-7 text-white/90">
-                <p><strong>Company:</strong> Meridian Group Holdings</p>
-                <p><strong>Industry:</strong> Financial services</p>
-                <p><strong>Entity structure:</strong> Parent + 3 operating subsidiaries</p>
-                <p><strong>Employees:</strong> 1,420</p>
-                <p><strong>Current level:</strong> Level 4 (estimated)</p>
-              </CardContent>
-            </Card>
-            <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
-              <CardContent className="p-6 text-sm leading-7 text-white/90">
-                <p><strong>Reporting period:</strong> FY2026</p>
-                <p><strong>Primary contact:</strong> Nomsa Khumalo, Group CFO</p>
-                <p><strong>Onboarding mode:</strong> Guided onboarding</p>
-                <p><strong>Workspace:</strong> Meridian FY2026 Verification Cycle</p>
-                <p><strong>Scorecard:</strong> Generic enterprise scorecard</p>
-              </CardContent>
-            </Card>
+          <div className="space-y-4">
+            <IntakeEditor />
+            <WorkspaceSnapshot />
           </div>
         </ProductSection>
 
