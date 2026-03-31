@@ -1,65 +1,823 @@
-import Image from "next/image";
+import {
+  ArrowRight,
+  BarChart3,
+  Check,
+  ChevronRight,
+  Clock3,
+  FileCheck2,
+  Menu,
+  ShieldCheck,
+  Sparkles,
+  Users,
+} from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+const trustedBy = [
+  "Meridian Group",
+  "Apex Capital",
+  "Strata Holdings",
+  "Novus Ventures",
+  "Prism Financial",
+  "Coreway Ltd",
+];
+
+const heroMetrics = [
+  { label: "Companies onboarded", value: "340+" },
+  { label: "Avg. score gain / quarter", value: "2.4pts" },
+  { label: "Audit pass rate", value: "98%" },
+];
+
+const pillars = [
+  { name: "Ownership", score: "24/25", progress: 96, tone: "bg-emerald-400" },
+  { name: "Management", score: "17/19", progress: 89, tone: "bg-emerald-400" },
+  { name: "Skills Dev", score: "15/20", progress: 75, tone: "bg-amber-400" },
+  { name: "Procurement", score: "22/31", progress: 71, tone: "bg-amber-400" },
+  { name: "Socio-Economic", score: "0/5", progress: 12, tone: "bg-rose-400" },
+];
+
+const actionItems = [
+  {
+    priority: "High",
+    points: "+5 pts",
+    text: "Register for sector levy exemption and recover missed compliance value.",
+  },
+  {
+    priority: "High",
+    points: "+4 pts",
+    text: "Increase supplier development spend to 2% of NPAT with verified partners.",
+  },
+  {
+    priority: "Medium",
+    points: "+3 pts",
+    text: "Appoint two additional Black female board members to unlock control gains.",
+  },
+  {
+    priority: "Low",
+    points: "+2 pts",
+    text: "Refresh procurement policy to favor 51% Black-owned suppliers by default.",
+  },
+];
+
+const features = [
+  {
+    icon: Clock3,
+    title: "Real-time score engine",
+    description:
+      "Continuous recalculation across all five pillars so leadership sees movement before the audit does.",
+  },
+  {
+    icon: Sparkles,
+    title: "AI action planner",
+    description:
+      "Every remediation step is ranked by likely points gained, cost, and implementation effort.",
+  },
+  {
+    icon: FileCheck2,
+    title: "Audit-ready document packs",
+    description:
+      "Evidence, certificates, and verification files stay organized in one clean export path.",
+  },
+  {
+    icon: BarChart3,
+    title: "Procurement intelligence",
+    description:
+      "Monitor supplier mix, qualifying spend, and leakage across the full procurement base.",
+  },
+  {
+    icon: Users,
+    title: "Skills and training tracker",
+    description:
+      "Tie bursaries, learnerships, and spend to the exact score outcomes they should drive.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Verification vault",
+    description:
+      "Keep certificate expiry, renewal, and chain-of-custody history visible without manual chasing.",
+  },
+];
+
+const scoreBreakdown = [
+  { name: "Ownership", score: 24, max: 25, progress: 96, color: "bg-emerald-400" },
+  { name: "Management Control", score: 17, max: 19, progress: 89, color: "bg-emerald-400" },
+  { name: "Skills Development", score: 15, max: 20, progress: 75, color: "bg-amber-400" },
+  { name: "Enterprise & Supplier", score: 22, max: 31, progress: 71, color: "bg-amber-400" },
+  { name: "Socio-Economic Dev", score: 0, max: 5, progress: 10, color: "bg-rose-400" },
+];
+
+const steps = [
+  {
+    number: "01",
+    title: "Connect your data",
+    description:
+      "Sync payroll, procurement, and financials via API or upload so the scorecard maps itself.",
+  },
+  {
+    number: "02",
+    title: "See your live score",
+    description:
+      "Get pillar-level visibility, sub-minimum exposure, and gaps that are actively costing you.",
+  },
+  {
+    number: "03",
+    title: "Execute the roadmap",
+    description:
+      "Assign owners, follow ranked actions, and track projected score lift against real changes.",
+  },
+  {
+    number: "04",
+    title: "Walk into audit ready",
+    description:
+      "Export the exact evidence trail, templates, and document pack your team needs in one pass.",
+  },
+];
+
+const testimonials = [
+  {
+    quote:
+      "We moved from Level 4 to Level 2 in 18 months because the team finally had a clear operating system instead of a vague spreadsheet.",
+    name: "Nomsa Khumalo",
+    role: "Group CFO, Meridian Group",
+    initials: "NK",
+  },
+  {
+    quote:
+      "Audit prep used to take three weeks. Now we export the pack, review exceptions, and move on with the business.",
+    name: "Thabo Radebe",
+    role: "Head of Compliance, Apex Capital",
+    initials: "TR",
+  },
+  {
+    quote:
+      "The procurement module surfaced millions in qualifying spend we were missing. The ROI showed up before the renewal call.",
+    name: "Sarah Botha",
+    role: "Transformation Director, Strata Holdings",
+    initials: "SB",
+  },
+];
+
+const pricing = [
+  {
+    name: "Starter",
+    price: "R4,900",
+    suffix: "/mo",
+    description:
+      "For smaller teams that need clean score visibility and a disciplined first improvement plan.",
+    features: [
+      "Live score dashboard",
+      "5-pillar breakdown",
+      "Top 10 AI actions",
+      "Basic document vault",
+      "1 user seat",
+    ],
+    cta: "Get Started",
+    featured: false,
+  },
+  {
+    name: "Growth",
+    price: "R14,900",
+    suffix: "/mo",
+    description:
+      "For companies actively pushing toward Level 1 or 2 with broader automation and procurement depth.",
+    features: [
+      "Everything in Starter",
+      "Unlimited action items",
+      "Supplier scanner",
+      "Audit-ready exports",
+      "Skills tracker",
+      "5 user seats",
+    ],
+    cta: "Get Started",
+    featured: true,
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    suffix: "",
+    description:
+      "For groups, subsidiaries, or regulated entities that need integrations, support, and governance controls.",
+    features: [
+      "Everything in Growth",
+      "Multi-entity management",
+      "ERP and payroll integrations",
+      "Dedicated success manager",
+      "SLA-backed uptime",
+      "Unlimited seats",
+    ],
+    cta: "Talk to Sales",
+    featured: false,
+  },
+];
+
+function SectionHeading({
+  eyebrow,
+  title,
+  accent,
+  description,
+}: {
+  eyebrow: string;
+  title: string;
+  accent: string;
+  description?: string;
+}) {
+  return (
+    <div className="max-w-2xl space-y-4">
+      <Badge variant="secondary" className="w-fit">
+        {eyebrow}
+      </Badge>
+      <div className="space-y-3">
+        <h2 className="font-serif text-4xl leading-none tracking-[-0.04em] text-white sm:text-5xl lg:text-6xl">
+          {title} <span className="text-[color:var(--primary)]">{accent}</span>
+        </h2>
+        {description ? (
+          <p className="max-w-xl text-base leading-7 text-[color:var(--muted-foreground)] sm:text-lg">
+            {description}
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="relative overflow-hidden bg-[color:var(--background)] text-[color:var(--foreground)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,241,171,0.18),transparent_28%),radial-gradient(circle_at_20%_20%,rgba(20,184,166,0.12),transparent_22%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(99,241,171,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(99,241,171,0.045)_1px,transparent_1px)] bg-[size:72px_72px] opacity-30" />
+
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[color:var(--background)]/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+          <a href="#" className="font-mono text-sm uppercase tracking-[0.32em] text-[color:var(--primary)]">
+            Equi<span className="text-[color:var(--muted-foreground)]">.ai</span>
+          </a>
+
+          <nav className="hidden items-center gap-8 md:flex">
+            <a href="#platform" className="text-sm text-[color:var(--muted-foreground)] transition hover:text-white">
+              Platform
+            </a>
+            <a href="#scoring" className="text-sm text-[color:var(--muted-foreground)] transition hover:text-white">
+              Scoring
+            </a>
+            <a href="#process" className="text-sm text-[color:var(--muted-foreground)] transition hover:text-white">
+              Process
+            </a>
+            <a href="#pricing" className="text-sm text-[color:var(--muted-foreground)] transition hover:text-white">
+              Pricing
+            </a>
+          </nav>
+
+          <div className="hidden md:block">
+            <Button asChild>
+              <a href="#cta">Request Access</a>
+            </Button>
+          </div>
+
+          <details className="group md:hidden">
+            <summary className="flex list-none items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--card)] p-3 text-[color:var(--foreground)] marker:hidden">
+              <Menu className="size-4" />
+            </summary>
+            <div className="absolute right-4 top-[calc(100%-0.25rem)] mt-3 w-64 rounded-3xl border border-[color:var(--border)] bg-[color:var(--card)] p-3 shadow-2xl shadow-black/40">
+              <div className="flex flex-col gap-1">
+                <a className="rounded-2xl px-4 py-3 text-sm text-[color:var(--muted-foreground)] hover:bg-white/5 hover:text-white" href="#platform">
+                  Platform
+                </a>
+                <a className="rounded-2xl px-4 py-3 text-sm text-[color:var(--muted-foreground)] hover:bg-white/5 hover:text-white" href="#scoring">
+                  Scoring
+                </a>
+                <a className="rounded-2xl px-4 py-3 text-sm text-[color:var(--muted-foreground)] hover:bg-white/5 hover:text-white" href="#process">
+                  Process
+                </a>
+                <a className="rounded-2xl px-4 py-3 text-sm text-[color:var(--muted-foreground)] hover:bg-white/5 hover:text-white" href="#pricing">
+                  Pricing
+                </a>
+                <Button asChild className="mt-2 w-full">
+                  <a href="#cta">Request Access</a>
+                </Button>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <div className="border-t border-white/6 bg-[color:var(--card)]/80">
+          <div className="mx-auto flex max-w-7xl gap-3 overflow-x-auto px-4 py-3 sm:px-6 lg:px-8">
+            {[
+              "Live score recalculation",
+              "Audit-ready exports",
+              "Procurement intelligence",
+              "AI-ranked action plans",
+              "Certificate expiry alerts",
+            ].map((item) => (
+              <Badge key={item} variant="secondary" className="shrink-0">
+                {item}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      <section className="relative mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)] lg:px-8 lg:py-28">
+        <div className="relative z-10 flex flex-col justify-center">
+          <Badge className="mb-6 w-fit">Compliance Intelligence Platform</Badge>
+          <h1 className="max-w-3xl font-serif text-5xl leading-[0.94] tracking-[-0.05em] text-white sm:text-6xl lg:text-8xl">
+            Know your score.
+            <span className="block text-[color:var(--primary)]">Own your outcome.</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+          <p className="mt-6 max-w-2xl text-base leading-8 text-[color:var(--muted-foreground)] sm:text-lg lg:text-xl">
+            Equi turns compliance from a static report into an operating system: live score visibility,
+            ranked improvement moves, and audit-ready documentation without the spreadsheet fog.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Button asChild size="lg" className="rounded-full px-7">
+              <a href="#cta">
+                Request Early Access
+                <ArrowRight />
+              </a>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="rounded-full px-7">
+              <a href="#platform">See Platform</a>
+            </Button>
+          </div>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            {heroMetrics.map((metric) => (
+              <Card key={metric.label} className="rounded-[1.5rem] bg-white/[0.03]">
+                <CardContent className="p-5">
+                  <p className="font-mono text-2xl text-white">{metric.value}</p>
+                  <p className="mt-2 text-sm leading-6 text-[color:var(--muted-foreground)]">
+                    {metric.label}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative z-10 lg:pl-8">
+          <Card className="overflow-hidden rounded-[2rem] border-[color:var(--border-strong)] bg-[linear-gradient(180deg,rgba(17,24,24,0.95),rgba(8,11,10,0.96))]">
+            <CardHeader className="border-b border-white/8 pb-5">
+              <div className="flex items-start justify-between gap-6">
+                <div>
+                  <CardDescription className="font-mono uppercase tracking-[0.26em]">
+                    Live Score Overview
+                  </CardDescription>
+                  <CardTitle className="mt-3 text-2xl text-white sm:text-3xl">
+                    Level 2 contributor
+                  </CardTitle>
+                </div>
+                <div className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 font-mono text-xs text-emerald-300">
+                  Updated 2m ago
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6 p-6">
+              <div className="grid gap-4 sm:grid-cols-[160px_1fr]">
+                <div className="flex flex-col items-center justify-center rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-5">
+                  <div className="flex size-28 items-center justify-center rounded-full border border-emerald-400/20 bg-[radial-gradient(circle,rgba(99,241,171,0.2),rgba(99,241,171,0.03))] font-mono text-4xl text-emerald-300 shadow-[0_0_60px_rgba(99,241,171,0.12)_inset]">
+                    78
+                  </div>
+                  <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.22em] text-[color:var(--muted-foreground)]">
+                    BEE Score
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {pillars.map((pillar) => (
+                    <div
+                      key={pillar.name}
+                      className="rounded-[1.25rem] border border-white/8 bg-white/[0.03] p-4"
+                    >
+                      <div className="mb-2 flex items-center justify-between gap-3">
+                        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white">
+                          {pillar.name}
+                        </p>
+                        <p className="font-mono text-sm text-[color:var(--muted-foreground)]">
+                          {pillar.score}
+                        </p>
+                      </div>
+                      <div className="h-2 rounded-full bg-white/8">
+                        <div
+                          className={`h-2 rounded-full ${pillar.tone}`}
+                          style={{ width: `${pillar.progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-3">
+                <Card className="rounded-[1.5rem] border-white/8 bg-white/[0.03]">
+                  <CardContent className="p-4">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--muted-foreground)]">
+                      Total Score
+                    </p>
+                    <p className="mt-3 font-mono text-3xl text-white">78/100</p>
+                    <p className="mt-2 text-sm text-emerald-300">+2.3 this quarter</p>
+                  </CardContent>
+                </Card>
+                <Card className="rounded-[1.5rem] border-white/8 bg-white/[0.03]">
+                  <CardContent className="p-4">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--muted-foreground)]">
+                      Current Level
+                    </p>
+                    <p className="mt-3 font-mono text-3xl text-white">L2</p>
+                    <p className="mt-2 text-sm text-amber-300">4pts to Level 1</p>
+                  </CardContent>
+                </Card>
+                <Card className="rounded-[1.5rem] border-white/8 bg-white/[0.03]">
+                  <CardContent className="p-4">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--muted-foreground)]">
+                      Audit Ready
+                    </p>
+                    <p className="mt-3 font-mono text-3xl text-white">84%</p>
+                    <p className="mt-2 text-sm text-emerald-300">6 docs pending</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section className="border-y border-white/8 bg-white/[0.03]">
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+          <p className="font-mono text-xs uppercase tracking-[0.32em] text-[color:var(--muted-foreground)]">
+            Trusted by teams under pressure
+          </p>
+          <div className="flex flex-wrap gap-x-8 gap-y-4">
+            {trustedBy.map((company) => (
+              <span
+                key={company}
+                className="font-mono text-sm uppercase tracking-[0.18em] text-white/55"
+              >
+                {company}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="platform" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
+          <SectionHeading
+            eyebrow="Platform"
+            title="Your compliance"
+            accent="command center."
+            description="The original concept had the right mood. This version keeps the signal but improves scanability, hierarchy, and mobile behavior so the product offering is clearer within the first screen and a half."
+          />
+
+          <Card className="rounded-[2rem] overflow-hidden border-[color:var(--border-strong)]">
+            <CardHeader className="border-b border-white/8">
+              <div className="flex flex-wrap items-center gap-2">
+                {["Score Overview", "Action Plan", "Documents", "Audit Trail"].map((tab, index) => (
+                  <Badge key={tab} variant={index === 0 ? "default" : "secondary"}>
+                    {tab}
+                  </Badge>
+                ))}
+              </div>
+            </CardHeader>
+            <CardContent className="grid gap-6 p-6 lg:grid-cols-[280px_1fr]">
+              <div className="space-y-3">
+                {pillars.map((pillar, index) => (
+                  <div
+                    key={pillar.name}
+                    className={`rounded-[1.35rem] border p-4 ${
+                      index === 0
+                        ? "border-emerald-400/30 bg-emerald-400/8"
+                        : "border-white/8 bg-white/[0.03]"
+                    }`}
+                  >
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white">
+                        {pillar.name}
+                      </span>
+                      <span className="font-mono text-sm text-[color:var(--muted-foreground)]">
+                        {pillar.score}
+                      </span>
+                    </div>
+                    <div className="h-2 rounded-full bg-black/30">
+                      <div
+                        className={`h-2 rounded-full ${pillar.tone}`}
+                        style={{ width: `${pillar.progress}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-4">
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {[
+                    { label: "Total score", value: "78/100", delta: "+2.3 this quarter" },
+                    { label: "Current level", value: "L2", delta: "4pts to Level 1" },
+                    { label: "Audit ready", value: "84%", delta: "6 docs pending" },
+                  ].map((metric) => (
+                    <Card key={metric.label} className="rounded-[1.35rem] border-white/8 bg-white/[0.03]">
+                      <CardContent className="p-4">
+                        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[color:var(--muted-foreground)]">
+                          {metric.label}
+                        </p>
+                        <p className="mt-2 font-mono text-2xl text-white">{metric.value}</p>
+                        <p className="mt-2 text-sm text-[color:var(--muted-foreground)]">{metric.delta}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                <div>
+                  <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+                    AI-ranked action items
+                  </p>
+                  <div className="space-y-3">
+                    {actionItems.map((item) => (
+                      <div
+                        key={item.text}
+                        className="flex flex-col gap-3 rounded-[1.35rem] border border-white/8 bg-white/[0.03] p-4 sm:flex-row sm:items-center"
+                      >
+                        <Badge
+                          variant="secondary"
+                          className={
+                            item.priority === "High"
+                              ? "border-rose-400/30 bg-rose-400/10 text-rose-200"
+                              : item.priority === "Medium"
+                                ? "border-amber-400/30 bg-amber-400/10 text-amber-100"
+                                : "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
+                          }
+                        >
+                          {item.priority}
+                        </Badge>
+                        <p className="flex-1 text-sm leading-6 text-white/90">{item.text}</p>
+                        <p className="font-mono text-sm text-[color:var(--primary)]">{item.points}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section id="scoring" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        <SectionHeading
+          eyebrow="Capabilities"
+          title="Built for the"
+          accent="whole stack."
+          description="The feature set is still centered on score visibility, planning, procurement, training, and verification, but the cards are now easier to skim and hold up better on smaller screens."
+        />
+
+        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+
+            return (
+              <Card
+                key={feature.title}
+                className="group rounded-[1.75rem] border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] transition duration-300 hover:-translate-y-1 hover:border-[color:var(--border-strong)]"
+              >
+                <CardContent className="p-6">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-white/35">
+                    0{index + 1}
+                  </p>
+                  <div className="mt-8 flex size-12 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 text-emerald-300">
+                    <Icon className="size-5" />
+                  </div>
+                  <h3 className="mt-6 text-2xl font-semibold tracking-tight text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-[color:var(--muted-foreground)]">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="border-y border-white/8 bg-white/[0.03]">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:px-8 lg:py-28">
+          <SectionHeading
+            eyebrow="Scorecard"
+            title="Five pillars."
+            accent="One number."
+            description="Equi maps the generic scorecard into a weighted system leaders can actually act on. The UI now emphasizes contribution, risk, and gaps instead of just presenting raw labels."
+          />
+
+          <Card className="rounded-[2rem] border-white/8 bg-[linear-gradient(180deg,rgba(11,16,14,0.96),rgba(8,11,10,0.96))]">
+            <CardContent className="space-y-4 p-6">
+              {scoreBreakdown.map((pillar) => (
+                <div key={pillar.name} className="rounded-[1.35rem] border border-white/8 bg-black/10 p-4">
+                  <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white">
+                      {pillar.name}
+                    </p>
+                    <p className="font-mono text-sm text-[color:var(--muted-foreground)]">
+                      {pillar.score}/{pillar.max}
+                    </p>
+                  </div>
+                  <div className="h-2.5 rounded-full bg-white/8">
+                    <div
+                      className={`h-2.5 rounded-full ${pillar.color}`}
+                      style={{ width: `${pillar.progress}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+              <div className="pt-2">
+                <Button asChild size="lg">
+                  <a href="#cta">
+                    Run Free Assessment
+                    <ChevronRight />
+                  </a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section id="process" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        <SectionHeading
+          eyebrow="How It Works"
+          title="From onboarding to"
+          accent="audit in four steps."
+        />
+
+        <div className="mt-10 grid gap-4 lg:grid-cols-4">
+          {steps.map((step, index) => (
+            <Card key={step.number} className="relative rounded-[1.75rem] border-white/8 bg-white/[0.03]">
+              <CardContent className="p-6">
+                <p className="font-mono text-5xl text-emerald-400/18">{step.number}</p>
+                <h3 className="mt-6 text-xl font-semibold text-white">{step.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-[color:var(--muted-foreground)]">
+                  {step.description}
+                </p>
+                {index < steps.length - 1 ? (
+                  <div className="absolute -right-2 top-10 hidden size-4 rounded-full border border-emerald-400/30 bg-[color:var(--background)] lg:block">
+                    <div className="absolute inset-1 rounded-full bg-emerald-300" />
+                  </div>
+                ) : null}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-y border-white/8 bg-white/[0.03]">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+          <SectionHeading
+            eyebrow="Customer Stories"
+            title="Results that"
+            accent="speak plainly."
+          />
+
+          <div className="mt-10 grid gap-4 lg:grid-cols-3">
+            {testimonials.map((testimonial) => (
+              <Card key={testimonial.name} className="rounded-[1.75rem] border-white/8 bg-[color:var(--background)]/60">
+                <CardContent className="p-6">
+                  <p className="font-serif text-2xl leading-9 tracking-[-0.02em] text-white">
+                    “{testimonial.quote}”
+                  </p>
+                  <div className="mt-8 flex items-center gap-4 border-t border-white/8 pt-5">
+                    <div className="flex size-12 items-center justify-center rounded-full border border-emerald-400/20 bg-emerald-400/10 font-mono text-sm text-emerald-200">
+                      {testimonial.initials}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">{testimonial.name}</p>
+                      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
+                        {testimonial.role}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        <SectionHeading
+          eyebrow="Pricing"
+          title="Simple, scalable"
+          accent="pricing."
+          description="I kept the three-tier structure from the source file, but the cards are more differentiated and easier to compare on mobile without collapsing into a cramped table."
+        />
+
+        <div className="mt-10 grid gap-4 xl:grid-cols-3">
+          {pricing.map((plan) => (
+            <Card
+              key={plan.name}
+              className={`rounded-[2rem] ${
+                plan.featured
+                  ? "border-emerald-400/35 bg-[linear-gradient(180deg,rgba(99,241,171,0.12),rgba(14,18,17,0.92))]"
+                  : "border-white/8 bg-white/[0.03]"
+              }`}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              <CardContent className="flex h-full flex-col p-6">
+                {plan.featured ? (
+                  <Badge className="mb-5 w-fit">Most Popular</Badge>
+                ) : (
+                  <div className="mb-5 h-6" />
+                )}
+                <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+                  {plan.name}
+                </p>
+                <div className="mt-4 flex items-end gap-2 text-white">
+                  <span className="font-mono text-5xl tracking-[-0.05em]">{plan.price}</span>
+                  {plan.suffix ? (
+                    <span className="pb-1 font-mono text-sm text-[color:var(--muted-foreground)]">
+                      {plan.suffix}
+                    </span>
+                  ) : null}
+                </div>
+                <p className="mt-4 text-sm leading-7 text-[color:var(--muted-foreground)]">
+                  {plan.description}
+                </p>
+                <div className="mt-6 space-y-3">
+                  {plan.features.map((feature) => (
+                    <div key={feature} className="flex items-center gap-3">
+                      <div className="flex size-5 items-center justify-center rounded-full border border-emerald-400/20 bg-emerald-400/10 text-emerald-300">
+                        <Check className="size-3" />
+                      </div>
+                      <p className="text-sm text-white/90">{feature}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-8">
+                  <Button
+                    asChild
+                    variant={plan.featured ? "default" : "outline"}
+                    className="w-full"
+                  >
+                    <a href="#cta">{plan.cta}</a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section id="cta" className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8 lg:pb-28">
+        <Card className="overflow-hidden rounded-[2.25rem] border-[color:var(--border-strong)] bg-[linear-gradient(135deg,rgba(99,241,171,0.16),rgba(12,18,16,0.92)_35%,rgba(10,12,12,0.98))]">
+          <CardContent className="relative px-6 py-12 text-center sm:px-10 sm:py-16">
+            <div className="pointer-events-none absolute inset-x-1/2 top-0 h-40 w-80 -translate-x-1/2 rounded-full bg-emerald-300/20 blur-3xl" />
+            <Badge className="relative z-10">Next Step</Badge>
+            <h2 className="relative z-10 mt-5 font-serif text-4xl leading-none tracking-[-0.05em] text-white sm:text-6xl">
+              Your next level is
+              <span className="block text-[color:var(--primary)]">one decision away.</span>
+            </h2>
+            <p className="relative z-10 mx-auto mt-5 max-w-2xl text-base leading-8 text-[color:var(--muted-foreground)] sm:text-lg">
+              Join 340+ companies using Equi to turn compliance from a reporting burden into a measurable strategic advantage.
+            </p>
+            <div className="relative z-10 mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+              <Button asChild size="lg">
+                <a href="mailto:hello@equi.ai">Request Early Access</a>
+              </Button>
+              <Button asChild variant="outline" size="lg">
+                <a href="mailto:sales@equi.ai">Book a Demo</a>
+              </Button>
+            </div>
+            <p className="relative z-10 mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-white/45">
+              No credit card required • Setup in under 10 minutes • Cancel anytime
+            </p>
+          </CardContent>
+        </Card>
+      </section>
+
+      <footer className="border-t border-white/8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+          <div>
+            <p className="font-mono text-sm uppercase tracking-[0.32em] text-[color:var(--primary)]">
+              Equi.ai
+            </p>
+            <p className="mt-2 text-sm text-[color:var(--muted-foreground)]">
+              Compliance intelligence for ambitious teams.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-5 text-sm text-[color:var(--muted-foreground)]">
+            {["Privacy", "Terms", "Security", "Docs", "Status"].map((item) => (
+              <a key={item} href="#" className="transition hover:text-white">
+                {item}
+              </a>
+            ))}
+          </div>
+          <p className="text-sm text-[color:var(--muted-foreground)]">
+            © 2026 Equi Technologies. All rights reserved.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </footer>
+    </main>
   );
 }
