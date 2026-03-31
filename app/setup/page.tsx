@@ -1,5 +1,8 @@
+"use client";
+
 import { ChecklistCard, NextStageCard, ProductSection, StageCards } from "@/components/product/blocks";
-import { SetupEditor, WorkspaceSnapshot } from "@/components/product/editors";
+import { SetupEditor, StageProgressEditor, WorkspaceSnapshot } from "@/components/product/editors";
+import { useWorkspace } from "@/components/product/workspace-context";
 import { ProductShell } from "@/components/product/shell";
 
 const setupPages = [
@@ -51,6 +54,8 @@ const setupOutputs = [
 ];
 
 export default function SetupPage() {
+  const { workspace } = useWorkspace();
+
   return (
     <ProductShell
       title="Workspace Setup Wizard"
@@ -79,6 +84,25 @@ export default function SetupPage() {
           <div className="space-y-4">
             <SetupEditor />
             <WorkspaceSnapshot />
+          </div>
+        </ProductSection>
+
+        <ProductSection
+          eyebrow="Progress State"
+          title="Setup completion and readiness"
+          description="This progress state is now shared across the flow so the product can communicate implementation status, not just content."
+        >
+          <div className="space-y-4">
+            <StageProgressEditor />
+            <ChecklistCard
+              title="Current setup status"
+              items={[
+                `Setup completion: ${workspace.stageStatus.setup.progress}%`,
+                `Audit cycle: ${workspace.auditCycleStart} to ${workspace.auditCycleEnd}`,
+                `Configured categories: ${workspace.documentCategories.length}`,
+                `Current role in workspace: ${workspace.currentUserRole}`,
+              ]}
+            />
           </div>
         </ProductSection>
 
