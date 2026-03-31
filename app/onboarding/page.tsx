@@ -1,4 +1,8 @@
+"use client";
+
 import { ChecklistCard, InfoGrid, NextStageCard, ProductSection, StageCards } from "@/components/product/blocks";
+import { OnboardingEditor, StageProgressEditor } from "@/components/product/editors";
+import { useWorkspace } from "@/components/product/workspace-context";
 import { ProductShell } from "@/components/product/shell";
 
 const sources = [
@@ -49,6 +53,11 @@ const onboardingStages = [
 ];
 
 export default function OnboardingPage() {
+  const { workspace } = useWorkspace();
+  const connectedSources = workspace.dataSources.filter((source) => source.connected).length;
+  const coverage = Math.round((connectedSources / workspace.dataSources.length) * 100);
+  const missingFields = (workspace.dataSources.length - connectedSources) * 7;
+
   return (
     <ProductShell
       title="Data Onboarding"
@@ -72,12 +81,23 @@ export default function OnboardingPage() {
 
         <InfoGrid
           items={[
-            { label: "Source coverage", value: "83%", helper: "5 of 6 major source categories connected." },
-            { label: "Data confidence", value: "High", helper: "Only supplier expiry metadata still incomplete." },
-            { label: "Missing fields", value: "14", helper: "Mostly in supplier and training evidence records." },
+            { label: "Source coverage", value: `${coverage}%`, helper: `${connectedSources} of ${workspace.dataSources.length} major source categories connected.` },
+            { label: "Data confidence", value: coverage >= 80 ? "High" : coverage >= 60 ? "Medium" : "Low", helper: "Confidence is derived from connected source coverage in this mocked flow." },
+            { label: "Missing fields", value: `${missingFields}`, helper: "Derived from the currently disconnected source records." },
             { label: "Score impact trace", value: "Visible", helper: "Each source shows which pillars it affects." },
           ]}
         />
+
+        <ProductSection
+          eyebrow="Connected State"
+          title="Control onboarding coverage and stage progress"
+          description="These controls update shared mock state. Changing source coverage here affects onboarding metrics and the broader workspace context."
+        >
+          <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+            <OnboardingEditor />
+            <StageProgressEditor />
+          </div>
+        </ProductSection>
 
         <NextStageCard
           title="Baseline assessment"
