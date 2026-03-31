@@ -21,7 +21,7 @@ export function ProductShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { workspace, setCurrentUserRole } = useWorkspace();
+  const { workspace, setCurrentUserRole, canAccessRoute } = useWorkspace();
 
   return (
     <main className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]">
@@ -34,7 +34,7 @@ export function ProductShell({
             </Link>
 
             <div className="hidden items-center gap-3 md:flex">
-              {productNav.map((item) => {
+              {productNav.filter((item) => canAccessRoute(item.href)).map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link
