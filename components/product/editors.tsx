@@ -1,6 +1,8 @@
 "use client";
 
 import { useWorkspace, type RoleKey } from "@/components/product/workspace-context";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 function Field({
@@ -170,5 +172,112 @@ export function WorkspaceSnapshot() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export function StageProgressEditor() {
+  const { workspace, setStageStatus } = useWorkspace();
+
+  return (
+    <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
+      <CardContent className="space-y-4 p-6">
+        {(
+          [
+            ["intake", "Intake"],
+            ["setup", "Setup"],
+            ["onboarding", "Onboarding"],
+          ] as const
+        ).map(([key, label]) => {
+          const stage = workspace.stageStatus[key];
+
+          return (
+            <div key={key} className="rounded-[1rem] border border-white/8 bg-black/10 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium text-white">{label}</p>
+                  <p className="mt-1 text-xs text-[color:var(--muted-foreground)]">
+                    Progress: {stage.progress}%
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      setStageStatus(key, {
+                        progress: Math.max(0, stage.progress - 10),
+                        completed: stage.progress - 10 <= 0 ? false : stage.completed,
+                      })
+                    }
+                  >
+                    -10%
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      setStageStatus(key, {
+                        progress: Math.min(100, stage.progress + 10),
+                        completed: stage.progress + 10 >= 100,
+                      })
+                    }
+                  >
+                    +10%
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => setStageStatus(key, { completed: !stage.completed })}
+                  >
+                    {stage.completed ? "Mark Incomplete" : "Mark Complete"}
+                  </Button>
+                </div>
+              </div>
+              <div className="mt-3 h-2.5 rounded-full bg-white/8">
+                <div className="h-2.5 rounded-full bg-emerald-400" style={{ width: `${stage.progress}%` }} />
+              </div>
+            </div>
+          );
+        })}
+      </CardContent>
+    </Card>
+  );
+}
+
+export function OnboardingEditor() {
+  const { workspace, toggleDataSource } = useWorkspace();
+
+  return (
+    <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
+      <CardContent className="space-y-4 p-6">
+        {workspace.dataSources.map((source) => (
+          <div
+            key={source.id}
+            className="flex flex-col gap-3 rounded-[1rem] border border-white/8 bg-black/10 p-4 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div>
+              <p className="text-sm font-medium text-white">{source.label}</p>
+              <p className="mt-1 text-xs text-[color:var(--muted-foreground)]">
+                Toggle source connectivity to change onboarding progress and confidence.
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Badge
+                variant="secondary"
+                className={
+                  source.connected
+                    ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
+                    : "border-rose-400/30 bg-rose-400/10 text-rose-200"
+                }
+              >
+                {source.connected ? "Connected" : "Missing"}
+              </Badge>
+              <Button size="sm" onClick={() => toggleDataSource(source.id)}>
+                Toggle
+              </Button>
+            </div>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
   );
 }
