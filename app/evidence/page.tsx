@@ -1,5 +1,10 @@
+"use client";
+
 import { ChecklistCard, NextStageCard, ProductSection, StageCards } from "@/components/product/blocks";
 import { ProductShell } from "@/components/product/shell";
+import { useWorkspace } from "@/components/product/workspace-context";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 
 const documentFields = [
   "Category",
@@ -45,6 +50,8 @@ const vaultStages = [
 ];
 
 export default function EvidencePage() {
+  const { workspace } = useWorkspace();
+
   return (
     <ProductShell
       title="Evidence and Document Vault"
@@ -64,6 +71,51 @@ export default function EvidencePage() {
             </div>
           </div>
         </ProductSection>
+
+        <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+          <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
+            <CardContent className="p-6">
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge variant="secondary">Active vault</Badge>
+                <Badge variant="secondary">{workspace.currentUserRole}</Badge>
+              </div>
+              <h3 className="mt-4 text-2xl font-semibold text-white">Configured document categories</h3>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {workspace.documentCategories.map((category) => (
+                  <div key={category} className="rounded-[1rem] border border-white/8 bg-black/10 px-4 py-3 text-sm text-white/90">
+                    {category}
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
+            <CardContent className="p-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+                Role-aware evidence ownership
+              </p>
+              <div className="mt-4 space-y-3 text-sm leading-7 text-white/90">
+                <p><strong>Compliance lead:</strong> {workspace.roles.complianceLead}</p>
+                <p><strong>Finance lead:</strong> {workspace.roles.financeLead}</p>
+                <p><strong>People lead:</strong> {workspace.roles.peopleLead}</p>
+                <p><strong>Procurement lead:</strong> {workspace.roles.procurementLead}</p>
+                <p><strong>Auditor access:</strong> {workspace.roles.auditor}</p>
+              </div>
+              <div className="mt-4 space-y-3">
+                {workspace.currentUserRole === "auditor" ? (
+                  <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">
+                    Read-only verification mode should expose the final folders, notes, and version history without editing controls.
+                  </div>
+                ) : (
+                  <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">
+                    This role can curate evidence requests, monitor expiry, and prepare export bundles tied to the configured document model.
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         <NextStageCard
           title="Audit and verification workspace"
