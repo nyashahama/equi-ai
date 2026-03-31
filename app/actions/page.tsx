@@ -4,6 +4,7 @@ import { InfoGrid, NextStageCard, ProductSection, StageCards } from "@/component
 import { ProductShell } from "@/components/product/shell";
 import { useWorkspace } from "@/components/product/workspace-context";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 const planningStages = [
@@ -31,7 +32,10 @@ const planningStages = [
 ];
 
 export default function ActionsPage() {
-  const { workspace } = useWorkspace();
+  const { workspace, setActionDecision, setActionStatus, canAccessRoute } = useWorkspace();
+  const acceptedActions = workspace.actions.filter((action) => action.decision === "accepted");
+  const canManageActions =
+    workspace.currentUserRole !== "executiveViewer" && workspace.currentUserRole !== "auditor";
 
   return (
     <ProductShell
@@ -49,10 +53,10 @@ export default function ActionsPage() {
 
         <InfoGrid
           items={[
-            { label: "Recommended actions", value: "18", helper: "Generated from current baseline and missing evidence." },
-            { label: "Accepted actions", value: "11", helper: "Approved into the current quarter plan." },
-            { label: "Projected score lift", value: "+9 pts", helper: "If the top approved actions are completed." },
-            { label: "Assigned owners", value: "6", helper: "Across finance, HR, procurement, and compliance." },
+            { label: "Recommended actions", value: `${workspace.actions.length}`, helper: "Generated from current baseline and missing evidence." },
+            { label: "Accepted actions", value: `${acceptedActions.length}`, helper: "Approved into the current quarter plan." },
+            { label: "Projected score lift", value: `+${acceptedActions.reduce((sum, action) => sum + Number(action.points.replace("+", "")), 0)} pts`, helper: "Based on currently accepted actions in shared workspace state." },
+            { label: "Assigned owners", value: `${new Set(workspace.actions.map((action) => action.owner)).size}`, helper: "Across finance, HR, procurement, and compliance." },
           ]}
         />
 
@@ -74,44 +78,58 @@ export default function ActionsPage() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
-            <CardContent className="p-6">
-              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
-                Role-aware planning emphasis
-              </p>
-              <div className="mt-4 space-y-3">
-                {workspace.currentUserRole === "financeLead" ? (
-                  <>
-                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Prioritize spend-linked actions and supplier development allocations.</div>
-                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Review cost / effort estimates before accepting action bundles.</div>
-                  </>
-                ) : workspace.currentUserRole === "procurementLead" ? (
-                  <>
-                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Prioritize supplier certificate coverage and qualifying spend actions.</div>
-                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Group procurement fixes into quarter-level initiatives with linked evidence requirements.</div>
-                  </>
-                ) : workspace.currentUserRole === "peopleLead" ? (
-                  <>
-                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Focus on management-control and training actions with strong documentation requirements.</div>
-                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Assign owners for learnership and workforce evidence before approval.</div>
-                  </>
-                ) : (
-                  <>
-                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Use this view to accept, reject, assign, and publish the cross-functional operating plan.</div>
-                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Approved actions should convert directly into execution work with visible dependencies and evidence needs.</div>
-                  </>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          {canManageActions ? (
+            <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
+              <CardContent className="p-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+                  Live action decisions
+                </p>
+                <div className="mt-4 space-y-3">
+                  {workspace.actions.map((action) => (
+                    <div key={action.id} className="rounded-[1rem] border border-white/8 bg-black/10 p-4">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <p className="text-sm font-medium text-white">{action.title}</p>
+                        <Badge variant="secondary">{action.status}</Badge>
+                      </div>
+                      <p className="mt-1 text-xs text-[color:var(--muted-foreground)]">
+                        Decision: {action.decision} • Owner: {action.owner} • Due {action.due}
+                      </p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <Button size="sm" onClick={() => setActionDecision(action.id, "accepted")}>Accept</Button>
+                        <Button size="sm" variant="outline" onClick={() => setActionDecision(action.id, "pending")}>Pending</Button>
+                        <Button size="sm" variant="outline" onClick={() => setActionDecision(action.id, "rejected")}>Reject</Button>
+                        <Button size="sm" variant="outline" onClick={() => setActionStatus(action.id, "verified")}>Verify</Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
+              <CardContent className="p-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+                  Access mode
+                </p>
+                <p className="mt-4 text-sm leading-7 text-white/90">
+                  This role can review action outcomes and accepted plans, but cannot approve or modify the planning queue.
+                </p>
+                <p className="mt-3 text-sm text-[color:var(--muted-foreground)]">
+                  Detailed execution remains visible through the dashboard and reporting views available to this role.
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
-        <NextStageCard
-          title="Execution layer"
-          description="Once actions are approved, the app needs a proper work management layer with statuses, comments, linked documents, projected impact, and review history."
-          href="/execution"
-          action="Go to Execution Layer"
-        />
+        {canAccessRoute("/execution") ? (
+          <NextStageCard
+            title="Execution layer"
+            description="Once actions are approved, the app needs a proper work management layer with statuses, comments, linked documents, projected impact, and review history."
+            href="/execution"
+            action="Go to Execution Layer"
+          />
+        ) : null}
       </div>
     </ProductShell>
   );
