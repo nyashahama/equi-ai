@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Mono, Instrument_Serif, Syne } from "next/font/google";
+import { WorkspaceProvider } from "@/components/product/workspace-context";
 import "./globals.css";
 
 const syne = Syne({
@@ -39,7 +40,9 @@ export default function RootLayout({
       lang="en"
       className={`${syne.variable} ${dmMono.variable} ${instrumentSerif.variable} h-full scroll-smooth antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <WorkspaceProvider>{children}</WorkspaceProvider>
+      </body>
     </html>
   );
 }
