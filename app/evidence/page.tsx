@@ -4,6 +4,7 @@ import { ChecklistCard, NextStageCard, ProductSection, StageCards } from "@/comp
 import { ProductShell } from "@/components/product/shell";
 import { useWorkspace } from "@/components/product/workspace-context";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 const documentFields = [
@@ -50,7 +51,10 @@ const vaultStages = [
 ];
 
 export default function EvidencePage() {
-  const { workspace } = useWorkspace();
+  const { workspace, setDocumentStatus, canAccessRoute } = useWorkspace();
+  const readyDocuments = workspace.documents.filter((document) => document.status === "Ready").length;
+  const readiness = Math.round((readyDocuments / workspace.documents.length) * 100);
+  const canManageEvidence = workspace.currentUserRole !== "executiveViewer";
 
   return (
     <ProductShell
@@ -117,12 +121,68 @@ export default function EvidencePage() {
           </Card>
         </div>
 
-        <NextStageCard
-          title="Audit and verification workspace"
-          description="When verification starts, the app should switch into a mode focused on readiness, unresolved issues, pack export, approval workflow, and immutable logging."
-          href="/audit-center"
-          action="Go to Audit Center"
-        />
+        <ProductSection
+          eyebrow="Live Evidence State"
+          title="Document readiness now feeds the workspace"
+          description="These mocked controls update shared evidence state. Readiness here should inform dashboard and audit-center behavior."
+        >
+          <div className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-3">
+              <Card className="rounded-[1.5rem] border-white/8 bg-white/[0.03]">
+                <CardContent className="p-5">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[color:var(--muted-foreground)]">Ready docs</p>
+                  <p className="mt-3 text-2xl font-semibold text-white">{readyDocuments}</p>
+                </CardContent>
+              </Card>
+              <Card className="rounded-[1.5rem] border-white/8 bg-white/[0.03]">
+                <CardContent className="p-5">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[color:var(--muted-foreground)]">Total docs</p>
+                  <p className="mt-3 text-2xl font-semibold text-white">{workspace.documents.length}</p>
+                </CardContent>
+              </Card>
+              <Card className="rounded-[1.5rem] border-white/8 bg-white/[0.03]">
+                <CardContent className="p-5">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[color:var(--muted-foreground)]">Readiness</p>
+                  <p className="mt-3 text-2xl font-semibold text-white">{readiness}%</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="space-y-3">
+              {workspace.documents.map((document) => (
+                <Card key={document.id} className="rounded-[1.5rem] border-white/8 bg-white/[0.03]">
+                  <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-white">{document.name}</p>
+                      <p className="mt-1 text-xs text-[color:var(--muted-foreground)]">
+                        Owner: {document.owner} • Updated {document.updated}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge variant="secondary">{document.status}</Badge>
+                      {canManageEvidence ? (
+                        <>
+                          <Button size="sm" onClick={() => setDocumentStatus(document.id, "Ready")}>Ready</Button>
+                          <Button size="sm" variant="outline" onClick={() => setDocumentStatus(document.id, "Review")}>Review</Button>
+                          <Button size="sm" variant="outline" onClick={() => setDocumentStatus(document.id, "Missing items")}>Missing</Button>
+                        </>
+                      ) : null}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </ProductSection>
+
+        {canAccessRoute("/audit-center") ? (
+          <NextStageCard
+            title="Audit and verification workspace"
+            description="When verification starts, the app should switch into a mode focused on readiness, unresolved issues, pack export, approval workflow, and immutable logging."
+            href="/audit-center"
+            action="Go to Audit Center"
+          />
+        ) : null}
       </div>
     </ProductShell>
   );
