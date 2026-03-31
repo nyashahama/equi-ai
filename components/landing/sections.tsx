@@ -1,5 +1,6 @@
 import { ArrowRight, Check, ChevronRight, Menu } from "lucide-react";
 
+import { EquiLogo } from "@/components/brand/equi-logo";
 import {
   actionItems,
   announcementItems,
@@ -63,8 +64,8 @@ export function LandingHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[color:var(--background)]/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-        <a href="#" className="font-mono text-sm uppercase tracking-[0.32em] text-[color:var(--primary)]">
-          Equi<span className="text-[color:var(--muted-foreground)]">.ai</span>
+        <a href="#" aria-label="Equi.ai home">
+          <EquiLogo />
         </a>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -690,7 +691,7 @@ export function LandingFooter() {
     <footer className="border-t border-white/8">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
         <div>
-          <p className="font-mono text-sm uppercase tracking-[0.32em] text-[color:var(--primary)]">Equi.ai</p>
+          <EquiLogo />
           <p className="mt-2 text-sm text-[color:var(--muted-foreground)]">
             Compliance intelligence for ambitious teams.
           </p>
