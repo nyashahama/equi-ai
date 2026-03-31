@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 
 import { ChecklistCard, InfoGrid, NextStageCard, ProductSection, StageCards } from "@/components/product/blocks";
-import { IntakeEditor, WorkspaceSnapshot } from "@/components/product/editors";
+import { IntakeEditor, StageProgressEditor, WorkspaceSnapshot } from "@/components/product/editors";
+import { useWorkspace } from "@/components/product/workspace-context";
 import { ProductShell } from "@/components/product/shell";
 import { Button } from "@/components/ui/button";
 
@@ -43,6 +46,8 @@ const intakeSteps = [
 ];
 
 export default function IntakePage() {
+  const { workspace } = useWorkspace();
+
   return (
     <ProductShell
       title="Qualification and Intake"
@@ -77,12 +82,20 @@ export default function IntakePage() {
 
         <InfoGrid
           items={[
-            { label: "Workspace state", value: "Created", helper: "Draft workspace initialized from intake." },
+            { label: "Workspace state", value: workspace.stageStatus.intake.completed ? "Completed" : "In progress", helper: "Draft workspace initialized from intake." },
             { label: "Scorecard model", value: "Generic", helper: "Selected from company structure and size." },
             { label: "Onboarding mode", value: "Guided", helper: "Customer success tasks assigned automatically." },
-            { label: "Initial checklist", value: "12 items", helper: "Generated from entity and reporting cycle." },
+            { label: "Initial checklist", value: `${workspace.stageStatus.intake.progress}%`, helper: "Generated from entity and reporting cycle." },
           ]}
         />
+
+        <ProductSection
+          eyebrow="Progress State"
+          title="Stage completion"
+          description="This state now persists across the setup and onboarding steps so the mocked product flow behaves like a real implementation tracker."
+        >
+          <StageProgressEditor />
+        </ProductSection>
 
         <div className="flex flex-wrap gap-3">
           <Button asChild>
