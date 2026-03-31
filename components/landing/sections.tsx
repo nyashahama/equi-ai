@@ -86,7 +86,7 @@ export function LandingHeader() {
 
         <div className="hidden md:block">
           <Button asChild>
-            <Link href="/get-started">Request Access</Link>
+            <Link href="/book-demo">Book Demo</Link>
           </Button>
         </div>
 
@@ -109,7 +109,7 @@ export function LandingHeader() {
                 Pricing
               </a>
               <Button asChild className="mt-2 w-full">
-                <Link href="/get-started">Request Access</Link>
+                <Link href="/book-demo">Book Demo</Link>
               </Button>
             </div>
           </div>
@@ -144,8 +144,8 @@ export function HeroSection() {
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button asChild size="lg" className="rounded-full px-7">
-            <Link href="/get-started">
-              Request Early Access
+            <Link href="/intake">
+              Start Assessment
               <ArrowRight />
             </Link>
           </Button>
@@ -672,10 +672,10 @@ export function CtaSection() {
           </p>
           <div className="relative z-10 mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Button asChild size="lg">
-              <Link href="/get-started">Request Early Access</Link>
+              <Link href="/book-demo">Book Demo</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/dashboard">View Dashboard</Link>
+              <Link href="/intake">Start Assessment</Link>
             </Button>
           </div>
           <p className="relative z-10 mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-white/45">

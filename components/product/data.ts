@@ -1,14 +1,19 @@
 import {
   BellRing,
-  CheckCircle2,
   ClipboardList,
   FileBadge2,
   FileCheck2,
+  FolderKanban,
+  Gauge,
   Layers3,
+  LineChart,
+  PackageCheck,
+  PlaySquare,
   ShieldCheck,
   Target,
   TrendingUp,
   Users,
+  WalletCards,
 } from "lucide-react";
 
 export const flowSteps = [
@@ -133,6 +138,15 @@ export const dashboardMilestones = [
 ];
 
 export const productNav = [
-  { href: "/get-started", label: "Get Started", icon: CheckCircle2 },
+  { href: "/intake", label: "Intake", icon: ClipboardList },
+  { href: "/setup", label: "Setup", icon: Layers3 },
+  { href: "/onboarding", label: "Onboarding", icon: PackageCheck },
+  { href: "/assessment", label: "Assessment", icon: Gauge },
+  { href: "/insights", label: "Insights", icon: LineChart },
+  { href: "/actions", label: "Actions", icon: Target },
+  { href: "/execution", label: "Execution", icon: PlaySquare },
+  { href: "/evidence", label: "Evidence", icon: FolderKanban },
+  { href: "/audit-center", label: "Audit", icon: ShieldCheck },
+  { href: "/monitoring", label: "Monitoring", icon: WalletCards },
   { href: "/dashboard", label: "Dashboard", icon: FileBadge2 },
 ];
