@@ -3,12 +3,9 @@
 import { AlertTriangle, CheckCircle2, ChevronRight, Download, FileText, Filter } from "lucide-react";
 
 import {
-  dashboardActions,
-  dashboardDocuments,
   dashboardFeed,
   dashboardMilestones,
   dashboardPillars,
-  dashboardStatCards,
 } from "@/components/product/data";
 import { ProductShell } from "@/components/product/shell";
 import { useWorkspace } from "@/components/product/workspace-context";
@@ -67,10 +64,20 @@ function statusTone(status: string) {
 }
 
 export default function DashboardPage() {
-  const { workspace } = useWorkspace();
+  const { workspace, canAccessRoute } = useWorkspace();
   const focus = roleDashboardFocus[workspace.currentUserRole];
   const currentOwner =
     workspace.roles.complianceLead ?? workspace.primaryContact.split(",")[0];
+  const readyDocuments = workspace.documents.filter((document) => document.status === "Ready").length;
+  const evidenceReadiness = Math.round((readyDocuments / workspace.documents.length) * 100);
+  const acceptedActions = workspace.actions.filter((action) => action.decision === "accepted").length;
+  const verifiedActions = workspace.actions.filter((action) => action.status === "verified").length;
+  const dashboardStatCards = [
+    { label: "Total score", value: "78/100", delta: "+2.3 this quarter" },
+    { label: "Current level", value: "Level 2", delta: "4pts to Level 1" },
+    { label: "Audit readiness", value: `${evidenceReadiness}%`, delta: `${workspace.documents.length - readyDocuments} documents pending` },
+    { label: "Accepted actions", value: `${acceptedActions}`, delta: `${verifiedActions} verified this cycle` },
+  ];
 
   return (
     <ProductShell
@@ -195,63 +202,78 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-[1.75rem] border-[color:var(--border-strong)] bg-[linear-gradient(180deg,rgba(17,24,24,0.95),rgba(8,11,10,0.96))]">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
-                    Action queue
-                  </p>
-                  <h2 className="mt-2 text-2xl font-semibold text-white">Top interventions this cycle</h2>
-                </div>
-                <Button variant="outline" size="sm">
-                  <ChevronRight className="size-4" />
-                  View plan
-                </Button>
-              </div>
-
-              <div className="mt-6 space-y-3">
-                {dashboardActions.map((action) => (
-                  <div
-                    key={action.title}
-                    className="grid gap-4 rounded-[1.25rem] border border-white/8 bg-white/[0.03] p-4 lg:grid-cols-[auto_1fr_auto_auto]"
-                  >
-                    <Badge
-                      variant="secondary"
-                      className={
-                        action.priority === "High"
-                          ? "border-rose-400/30 bg-rose-400/10 text-rose-200"
-                          : action.priority === "Medium"
-                            ? "border-amber-400/30 bg-amber-400/10 text-amber-100"
-                            : "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
-                      }
-                    >
-                      {action.priority}
-                    </Badge>
-                    <div>
-                      <p className="text-sm font-medium text-white">{action.title}</p>
-                      <p className="mt-1 text-xs text-[color:var(--muted-foreground)]">
-                        Owner: {action.owner === "Finance"
-                          ? workspace.roles.financeLead
-                          : action.owner === "HR"
-                            ? workspace.roles.peopleLead
-                            : action.owner === "Procurement"
-                              ? workspace.roles.procurementLead
-                              : action.owner === "CFO"
-                                ? workspace.primaryContact.split(",")[0]
-                                : workspace.roles.complianceLead} • Due {action.due}
-                      </p>
-                    </div>
-                    <p className="font-mono text-sm text-[color:var(--primary)]">{action.points} pts</p>
-                    <Button size="sm" variant="outline">Open</Button>
+          {canAccessRoute("/actions") ? (
+            <Card className="rounded-[1.75rem] border-[color:var(--border-strong)] bg-[linear-gradient(180deg,rgba(17,24,24,0.95),rgba(8,11,10,0.96))]">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+                      Action queue
+                    </p>
+                    <h2 className="mt-2 text-2xl font-semibold text-white">Top interventions this cycle</h2>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                  <Button variant="outline" size="sm">
+                    <ChevronRight className="size-4" />
+                    View plan
+                  </Button>
+                </div>
+
+                <div className="mt-6 space-y-3">
+                  {workspace.actions.map((action) => (
+                    <div
+                      key={action.id}
+                      className="grid gap-4 rounded-[1.25rem] border border-white/8 bg-white/[0.03] p-4 lg:grid-cols-[auto_1fr_auto_auto]"
+                    >
+                      <Badge
+                        variant="secondary"
+                        className={
+                          action.priority === "High"
+                            ? "border-rose-400/30 bg-rose-400/10 text-rose-200"
+                            : action.priority === "Medium"
+                              ? "border-amber-400/30 bg-amber-400/10 text-amber-100"
+                              : "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
+                        }
+                      >
+                        {action.priority}
+                      </Badge>
+                      <div>
+                        <p className="text-sm font-medium text-white">{action.title}</p>
+                        <p className="mt-1 text-xs text-[color:var(--muted-foreground)]">
+                          Owner: {action.owner === "Finance"
+                            ? workspace.roles.financeLead
+                            : action.owner === "HR"
+                              ? workspace.roles.peopleLead
+                              : action.owner === "Procurement"
+                                ? workspace.roles.procurementLead
+                                : action.owner === "CFO"
+                                  ? workspace.primaryContact.split(",")[0]
+                                  : workspace.roles.complianceLead} • Due {action.due}
+                        </p>
+                      </div>
+                      <p className="font-mono text-sm text-[color:var(--primary)]">{action.points} pts</p>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary">{action.decision}</Badge>
+                        <Button size="sm" variant="outline">Open</Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
+              <CardContent className="p-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">Restricted section</p>
+                <p className="mt-4 text-sm leading-7 text-white/90">
+                  This role does not have access to the action-planning workspace. High-level outcomes remain visible through the summary cards above.
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+          {canAccessRoute("/evidence") ? (
           <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -268,7 +290,7 @@ export default function DashboardPage() {
               </div>
 
               <div className="mt-6 space-y-3">
-                {dashboardDocuments.map((doc) => (
+                {workspace.documents.map((doc) => (
                   <div
                     key={doc.name}
                     className="grid gap-4 rounded-[1.25rem] border border-white/8 bg-black/10 p-4 sm:grid-cols-[1fr_auto_auto]"
@@ -294,6 +316,16 @@ export default function DashboardPage() {
               </div>
             </CardContent>
           </Card>
+          ) : (
+            <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
+              <CardContent className="p-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">Restricted section</p>
+                <p className="mt-4 text-sm leading-7 text-white/90">
+                  This role cannot open the evidence workspace. Only summarized readiness remains visible on the dashboard.
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="space-y-6">
             <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
