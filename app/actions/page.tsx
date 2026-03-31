@@ -1,5 +1,10 @@
+"use client";
+
 import { InfoGrid, NextStageCard, ProductSection, StageCards } from "@/components/product/blocks";
 import { ProductShell } from "@/components/product/shell";
+import { useWorkspace } from "@/components/product/workspace-context";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 
 const planningStages = [
   {
@@ -26,6 +31,8 @@ const planningStages = [
 ];
 
 export default function ActionsPage() {
+  const { workspace } = useWorkspace();
+
   return (
     <ProductShell
       title="Action Planning"
@@ -48,6 +55,56 @@ export default function ActionsPage() {
             { label: "Assigned owners", value: "6", helper: "Across finance, HR, procurement, and compliance." },
           ]}
         />
+
+        <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+          <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
+            <CardContent className="p-6">
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge variant="secondary">Active planner</Badge>
+                <Badge variant="secondary">{workspace.currentUserRole}</Badge>
+              </div>
+              <h3 className="mt-4 text-2xl font-semibold text-white">Current planning context</h3>
+              <div className="mt-4 space-y-3 text-sm leading-7 text-white/90">
+                <p><strong>Workspace:</strong> {workspace.workspaceName}</p>
+                <p><strong>Primary contact:</strong> {workspace.primaryContact}</p>
+                <p><strong>Finance owner:</strong> {workspace.roles.financeLead}</p>
+                <p><strong>People owner:</strong> {workspace.roles.peopleLead}</p>
+                <p><strong>Procurement owner:</strong> {workspace.roles.procurementLead}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-[1.75rem] border-white/8 bg-white/[0.03]">
+            <CardContent className="p-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--muted-foreground)]">
+                Role-aware planning emphasis
+              </p>
+              <div className="mt-4 space-y-3">
+                {workspace.currentUserRole === "financeLead" ? (
+                  <>
+                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Prioritize spend-linked actions and supplier development allocations.</div>
+                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Review cost / effort estimates before accepting action bundles.</div>
+                  </>
+                ) : workspace.currentUserRole === "procurementLead" ? (
+                  <>
+                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Prioritize supplier certificate coverage and qualifying spend actions.</div>
+                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Group procurement fixes into quarter-level initiatives with linked evidence requirements.</div>
+                  </>
+                ) : workspace.currentUserRole === "peopleLead" ? (
+                  <>
+                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Focus on management-control and training actions with strong documentation requirements.</div>
+                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Assign owners for learnership and workforce evidence before approval.</div>
+                  </>
+                ) : (
+                  <>
+                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Use this view to accept, reject, assign, and publish the cross-functional operating plan.</div>
+                    <div className="rounded-[1rem] border border-white/8 bg-black/10 p-4 text-sm text-white/90">Approved actions should convert directly into execution work with visible dependencies and evidence needs.</div>
+                  </>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         <NextStageCard
           title="Execution layer"
